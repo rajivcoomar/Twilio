@@ -1,38 +1,61 @@
+
 const express = require('express');
+const dialogflow = require('@google-cloud/dialogflow').v2beta1
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const port = 3000;
 
-const accountSid =  //process.env.TWILIO_ACCOUNT_SID;
-const token = //process.env.TWILIO_TOKEN;
-const authToken = token;
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_TOKEN;
 	
 const client = require('twilio')(accountSid, authToken);
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
-
-
-
-app.post('/reply', express.json(), (req, res) =>  {
-	return new Promise((resolve,reject)=>{
-   
-    console.log(req.body.Body);
+async function  callGDF(req) {
 	
 	
 	var messageToSend = "";
 	
-	if(req.body.Body == 'hi')
-	{
-		messageToSend = "Hello There, How I can assist you";
-	}
-	else
-	{
-		messageToSend = "Hello "+req.body.Body+"How are you! Let me know how I can assist you";
-	}
+	const sessionClient = new dialogflow.SessionsClient();
+
+	 const projectId = '<projectId>;
+	 const sessionId = Math.floor(Math.random() * 37 ) ; ;
+	 const languageCode = 'en-US';
+	 const knowledgeBaseId = <knowledgeBaseId>;
+	// const query = `phrase(s) to pass to detect, e.g. I'd like to reserve a room for six people`;
+
+	// Define session path
+	const sessionPath = sessionClient.projectAgentSessionPath(
+	  projectId,
+	  sessionId
+	);
+	const knowledgeBasePath =
+	  'projects/' + projectId + '/knowledgeBases/' + knowledgeBaseId ;
+
+	// The audio query request
+	const request = {
+	  session: sessionPath,
+	  queryInput: {
+		text: {
+		  text: req.body.Body,
+		  languageCode: languageCode,
+		},
+	  },
+	 queryParams: {
+		knowledgeBaseNames: [knowledgeBasePath],
+	  },
+	   headers: { 
+				
+				 'content-type': 'application/json; charset=utf-8' 
+				
+			  }
+	};
+
+	const responses = await sessionClient.detectIntent(request);
+	
+	messageToSend = responses[0].queryResult.fulfillmentText;
+	console.log(messageToSend);
+	
 	
 	client.messages
 		  .create({
@@ -43,19 +66,29 @@ app.post('/reply', express.json(), (req, res) =>  {
 		   
 		  .then((message) => {
 			  console.log(message.sid);
-			  resolve( message.sid)
+			 
 		  });
-	});
+		  
+	
+	
+	
+}
 
+async function test(req){
+await callGDF(req);
+}
 
-  res.send('send via callback');
+app.post('/reply', express.json(), (req, res) =>  {
+	
+   
+    console.log(req.body.Body);
+	test(req);
+	res.send('send via callback');
 });
 
 
 
-app.post('/callback', (req, res) => {
-  res.send('Hello World!');
-});
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
