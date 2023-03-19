@@ -19,7 +19,7 @@ async function  callGDF(req) {
 	const sessionClient = new dialogflow.SessionsClient();
 
 	 const projectId = '<projectId>;
-	 const sessionId = Math.floor(Math.random() * 37 ) ; ;
+	 const sessionId = Math.floor(Math.random() * 37 ) ; 
 	 const languageCode = 'en-US';
 	 const knowledgeBaseId = <knowledgeBaseId>;
 	// const query = `phrase(s) to pass to detect, e.g. I'd like to reserve a room for six people`;
@@ -60,8 +60,8 @@ async function  callGDF(req) {
 	client.messages
 		  .create({
 			 body: messageToSend,
-			 from: "whatsapp:+14155238886",
-			 to: "whatsapp:+919765496594"
+			 from: "whatsapp:<Twilio number>",
+			 to: "whatsapp:<Your mobile no>"
 		   })
 		   
 		  .then((message) => {
@@ -69,6 +69,65 @@ async function  callGDF(req) {
 			 
 		  });
 		  
+	
+	
+	
+}
+
+async function  callDetectIntent(req) {
+	
+	
+	var messageToSend = "";
+	
+	const sessionClient = new dialogflow.SessionsClient();
+
+	 const projectId = 'projectId';
+	 const sessionId = Math.floor(Math.random() * 37 ) ; 
+	 const languageCode = 'en-US';
+	 
+	// const query = `phrase(s) to pass to detect, e.g. I'd like to reserve a room for six people`;
+
+	// Define session path
+	const sessionPath = sessionClient.projectAgentSessionPath(
+	  projectId,
+	  sessionId
+	);
+	
+
+	// The audio query request
+	const request = {
+	  session: sessionPath,
+	  queryInput: {
+		text: {
+		  text: req.body.Body,
+		  languageCode: languageCode,
+		},
+	  },
+	   headers: { 
+				
+				 'content-type': 'application/json; charset=utf-8' 
+				
+			  }
+	};
+
+	const responses = await sessionClient.detectIntent(request);
+	
+	messageToSend = responses[0].queryResult.fulfillmentText;
+	console.log(messageToSend);
+	
+	
+	client.messages
+		  .create({
+			 body: messageToSend,
+			 from: "whatsapp:<Twilio number>",
+			 to: "whatsapp:<Your mobile no>"
+		   })
+		   
+		  .then((message) => {
+			  console.log(message.sid);
+			 
+		  });
+		
 	
 	
 	
