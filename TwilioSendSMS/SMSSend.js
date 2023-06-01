@@ -1,3 +1,11 @@
+//Windows CMD
+//set TWILIO_AUTH_TOKEN=<Auth token value>
+//set TWILIO_ACCOUNT_SID=<Account sid>
+
+//Unix 
+//$ TWILIO_AUTH_TOKEN=<Auth token value>
+//$ TWILIO_ACCOUNT_SID=<Account sid>
+
 callInitSendSMS();
 
 async function callInitSendSMS() {

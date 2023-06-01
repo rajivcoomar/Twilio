@@ -1,3 +1,16 @@
+//Windows CMD
+//set TWILIO_AUTH_TOKEN=<Auth token value>
+//set TWILIO_ACCOUNT_SID=<Account sid>
+
+//Unix 
+//$ TWILIO_AUTH_TOKEN=<Auth token value>
+//$ TWILIO_ACCOUNT_SID=<Account sid>
+
+//For Dialogflow Set access Token
+//gcloud auth login
+//gcloud projects list
+//gcloud config set project 
+//gcloud auth application-default login
 
 //The generated url ( plus ngrok if local) from this code to be placed in Twilio SMS configuration -> A message comes in -> Webhook
 

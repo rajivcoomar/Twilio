@@ -1,5 +1,3 @@
-//The generated url from this code to be placed in send SMS function at statusCallback
-
 
 const express = require('express');
 const app = express();

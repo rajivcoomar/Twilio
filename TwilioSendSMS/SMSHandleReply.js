@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const port = 4000;
+const port = 3000;
 
 app.post('/HandleReply', express.json(), (req, res) =>  {
   
